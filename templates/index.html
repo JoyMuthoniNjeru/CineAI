@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineAI - Movie Recommendations</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">🎬 CineAI</div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search movies...">
+            <button onclick="searchMovies()">Search</button>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <h1>Discover Your Next Favorite Movie</h1>
+        <p>Powered by ML recommendations just for you</p>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+
+        <!-- TOP RATED SECTION -->
+        <section>
+            <h2 class="section-title">🏆 Top Rated Movies</h2>
+            <div class="movies-grid" id="topMovies">
+                <p class="loading">Loading movies...</p>
+            </div>
+        </section>
+
+        <!-- SEARCH RESULTS -->
+        <section id="searchSection" style="display:none">
+            <h2 class="section-title">🔍 Search Results</h2>
+            <div class="movies-grid" id="searchResults"></div>
+        </section>
+
+        <!-- RECOMMENDATIONS -->
+        <section id="recommendSection" style="display:none">
+            <h2 class="section-title">✨ Because you liked <span id="recommendTitle"></span></h2>
+            <div class="movies-grid" id="recommendations"></div>
+        </section>
+
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
