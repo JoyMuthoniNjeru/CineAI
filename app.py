@@ -50,5 +50,45 @@ def recommend(movie_id):
     recommendations = get_recommendations(movie_id, movies, ratings)
     return jsonify(recommendations)
 
+@app.route("/api/sentiment", methods=["POST"])
+def analyze_sentiment():
+    from sklearn.feature_extraction.text import CountVectorizer
+    from sklearn.naive_bayes import MultinomialNB
+    
+    data = request.get_json()
+    text = data.get("text", "")
+    
+    # Quick sentiment model
+    sample_reviews = [
+        "amazing wonderful loved fantastic brilliant incredible outstanding",
+        "terrible awful horrible boring dreadful waste disappointing bad",
+        "great movie enjoyed it very much recommended",
+        "worst film ever seen hated every minute",
+    ]
+    sample_labels = [1, 0, 1, 0]
+    
+    vec = CountVectorizer()
+    X = vec.fit_transform(sample_reviews)
+    clf = MultinomialNB()
+    clf.fit(X, sample_labels)
+    
+    result = clf.predict(vec.transform([text]))[0]
+    return jsonify({"sentiment": "positive" if result == 1 else "negative"})
+
+@app.route("/api/ai-blurb/<int:movie_id>")
+def ai_blurb(movie_id):
+    from transformers import pipeline
+    
+    movie = movies[movies["movieId"] == movie_id].iloc[0]
+    genres = movie["genres"]
+    title = movie["title"]
+    
+    generator = pipeline("text-generation", model="distilgpt2")
+    prompt = f"This {genres} movie called {title} is great because"
+    result = generator(prompt, max_length=80, do_sample=True, temperature=0.9)
+    
+    blurb = result[0]["generated_text"]
+    return jsonify({"blurb": blurb})
+
 if __name__ == "__main__":
     app.run(debug=True)

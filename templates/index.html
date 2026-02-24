@@ -8,6 +8,30 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- MOVIE DETAIL PANEL -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+<div class="detail-panel" id="detailPanel">
+    <button class="close-btn" onclick="closePanel()">✕</button>
+    
+    <div class="panel-content">
+        <h2 id="panelTitle"></h2>
+        <p id="panelGenres" class="panel-genres"></p>
+        
+        <!-- AI WHY YOU'LL LOVE IT -->
+        <div class="ai-section">
+            <h3>🤖 Why you'll love this</h3>
+            <p id="aiBlurb" class="ai-blurb">Click generate to find out...</p>
+            <button class="ai-btn" onclick="generateAIBlurb()">✨ Generate AI insight</button>
+        </div>
+
+        <!-- REVIEW SENTIMENT -->
+        <div class="ai-section">
+            <h3>📝 Review Sentiment Analyzer</h3>
+            <textarea id="reviewInput" placeholder="Type your review here and see live sentiment analysis..." rows="4"></textarea>
+            <div id="sentimentResult" class="sentiment-result"></div>
+        </div>
+    </div>
+</div>
     <!-- NAVBAR -->
     <nav class="navbar">
         <div class="logo">🎬 CineAI</div>
