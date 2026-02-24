@@ -51,6 +51,30 @@ async function getRecommendations(movieId, movieTitle, event) {
     section.scrollIntoView({ behavior: "smooth" });
 }
 
+// --- LOAD TASTE PROFILE ---
+async function loadTasteProfile() {
+    const res = await fetch("/api/taste-profile");
+    const data = await res.json();
+    
+    const container = document.getElementById("tasteBars");
+    
+    if (data.length === 0) {
+        container.innerHTML = "<p class='loading'>No data yet — start clicking on movies!</p>";
+        return;
+    }
+    
+    const max = data[0].count;
+    container.innerHTML = data.map(item => `
+        <div class="taste-bar-row">
+            <div class="taste-bar-label">${item.genre}</div>
+            <div class="taste-bar-track">
+                <div class="taste-bar-fill" style="width: ${(item.count / max) * 100}%"></div>
+            </div>
+            <div class="taste-bar-count">${item.count}</div>
+        </div>
+    `).join("");
+}
+
 // --- OPEN MOVIE PANEL ---
 function openPanel(movie) {
     currentMovie = movie;
@@ -61,6 +85,13 @@ function openPanel(movie) {
     document.getElementById("sentimentResult").textContent = "";
     document.getElementById("detailPanel").style.display = "block";
     document.getElementById("panelOverlay").style.display = "block";
+
+    // Track genres for taste profile
+    fetch("/api/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ genres: movie.genres })
+    }).then(() => loadTasteProfile());
 }
 
 // --- CLOSE PANEL ---
@@ -135,4 +166,5 @@ function createMovieCard(movie, showSimilarity = false) {
             </button>
         </div>
     `;
+
 }

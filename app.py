@@ -77,6 +77,29 @@ sentiment_clf = MultinomialNB()
 sentiment_clf.fit(sentiment_X, sentiment_labels)
 
 
+# In-memory taste profile (tracks genre clicks)
+taste_profile = {}
+
+@app.route("/api/track", methods=["POST"])
+def track_genre():
+    data = request.get_json()
+    genres = data.get("genres", "")
+    
+    for genre in genres.split(", "):
+        genre = genre.strip()
+        if genre:
+            taste_profile[genre] = taste_profile.get(genre, 0) + 1
+    
+    return jsonify({"status": "ok"})
+
+@app.route("/api/taste-profile")
+def get_taste_profile():
+    if not taste_profile:
+        return jsonify([])
+    
+    sorted_profile = sorted(taste_profile.items(), key=lambda x: x[1], reverse=True)
+    return jsonify([{"genre": k, "count": v} for k, v in sorted_profile[:8]])
+
 @app.route("/api/ai-blurb/<int:movie_id>")
 def ai_blurb(movie_id):
     from transformers import pipeline
