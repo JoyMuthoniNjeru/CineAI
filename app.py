@@ -1,4 +1,6 @@
 from flask import Flask, render_template, jsonify, request
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
 import pandas as pd
 import os
 
@@ -54,26 +56,26 @@ def recommend(movie_id):
 def analyze_sentiment():
     from sklearn.feature_extraction.text import CountVectorizer
     from sklearn.naive_bayes import MultinomialNB
-    
-    data = request.get_json()
-    text = data.get("text", "")
-    
-    # Quick sentiment model
-    sample_reviews = [
-        "amazing wonderful loved fantastic brilliant incredible outstanding",
-        "terrible awful horrible boring dreadful waste disappointing bad",
-        "great movie enjoyed it very much recommended",
-        "worst film ever seen hated every minute",
-    ]
-    sample_labels = [1, 0, 1, 0]
-    
-    vec = CountVectorizer()
-    X = vec.fit_transform(sample_reviews)
-    clf = MultinomialNB()
-    clf.fit(X, sample_labels)
-    
-    result = clf.predict(vec.transform([text]))[0]
-    return jsonify({"sentiment": "positive" if result == 1 else "negative"})
+
+sentiment_reviews = [
+    "amazing wonderful loved fantastic brilliant incredible outstanding",
+    "great movie enjoyed it very much recommended",
+    "beautiful story loved the characters heartwarming",
+    "best film ever seen masterpiece loved every minute",
+    "highly recommend brilliant acting loved the plot",
+    "terrible awful horrible boring dreadful waste disappointing bad",
+    "worst film ever seen hated every minute",
+    "boring slow painful to watch complete disaster",
+    "awful acting horrible story waste of time",
+    "dreadful film do not watch it disappointing",
+]
+sentiment_labels = [1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
+
+sentiment_vec = CountVectorizer()
+sentiment_X = sentiment_vec.fit_transform(sentiment_reviews)
+sentiment_clf = MultinomialNB()
+sentiment_clf.fit(sentiment_X, sentiment_labels)
+
 
 @app.route("/api/ai-blurb/<int:movie_id>")
 def ai_blurb(movie_id):
